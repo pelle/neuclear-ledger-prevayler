@@ -205,6 +205,14 @@ public class PrevalentLedger extends Ledger implements Serializable {
         }
     }
 
+    public double getTestBalance() throws LowlevelLedgerException {
+        try {
+            return ((Double) prevayler.execute(new GetTestBalanceQuery())).doubleValue();
+        } catch (Exception e) {
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
     public void close() {
         try {
             prevayler.takeSnapshot();
