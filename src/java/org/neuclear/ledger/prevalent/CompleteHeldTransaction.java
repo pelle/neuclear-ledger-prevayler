@@ -45,11 +45,12 @@ public class CompleteHeldTransaction implements TransactionWithQuery {
 
         table.register(tran.getRequestId(), executionTime);
 
-        Iterator iter = tran.getItems();
+        final PostedTransaction posted = new PostedTransaction(tran, executionTime, amount, comment);
+        Iterator iter = posted.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
             system.getBalanceTable().add(item.getBook(), item.getAmount());
         }
-        return new PostedTransaction(tran, executionTime, amount, comment);
+        return posted;
     }
 }

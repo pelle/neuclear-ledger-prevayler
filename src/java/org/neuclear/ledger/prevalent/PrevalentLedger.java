@@ -18,9 +18,30 @@ import java.util.Date;
 public class PrevalentLedger extends Ledger implements Serializable {
     private final LedgerSystem system;
 
+    /**
+     * Persistent Prevalent Ledger
+     *
+     * @param id
+     * @param basedir
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     public PrevalentLedger(final String id, final String basedir) throws IOException, ClassNotFoundException {
         super(id);
         prevayler = PrevaylerFactory.createPrevayler(new LedgerSystem(id), basedir);
+        system = (LedgerSystem) prevayler.prevalentSystem();
+    }
+
+    /**
+     * Transient PrevalentLedger
+     *
+     * @param id
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
+    public PrevalentLedger(final String id) throws IOException, ClassNotFoundException {
+        super(id);
+        prevayler = PrevaylerFactory.createTransientPrevayler(new LedgerSystem(id));
         system = (LedgerSystem) prevayler.prevalentSystem();
     }
 
@@ -247,7 +268,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
 
     public void close() {
         try {
-            prevayler.takeSnapshot();
+//            prevayler.takeSnapshot();
             prevayler.close();
         } catch (IOException e) {
             e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
