@@ -308,6 +308,21 @@ public class PrevalentLedgerController extends LedgerController implements Seria
         }
     }
 
+    public PostedTransaction performCompleteHold(PostedHeldTransaction hold, Book origbook, Book newbook, double amount, String comment) throws InvalidTransactionException, LowlevelLedgerException, TransactionExpiredException, UnknownTransactionException {
+        try {
+            return (PostedTransaction) prevayler.execute(new CompleteHeldTransactionChangeBook(hold, origbook, newbook, amount, comment));
+        } catch (Exception e) {
+            if (e instanceof InvalidTransactionException)
+                throw (InvalidTransactionException) e;
+            if (e instanceof TransactionExpiredException)
+                throw (TransactionExpiredException) e;
+            if (e instanceof LowlevelLedgerException)
+                throw (LowlevelLedgerException) e;
+
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
     public double getTestBalance(String ledger) throws LowlevelLedgerException {
         try {
             return ((Double) prevayler.execute(new GetTestBalanceQuery(ledger))).doubleValue();
