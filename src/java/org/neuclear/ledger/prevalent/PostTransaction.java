@@ -1,7 +1,10 @@
 package org.neuclear.ledger.prevalent;
 
+import org.neuclear.ledger.PostedTransaction;
+import org.neuclear.ledger.TransactionExistsException;
+import org.neuclear.ledger.TransactionItem;
+import org.neuclear.ledger.UnPostedTransaction;
 import org.prevayler.TransactionWithQuery;
-import org.neuclear.ledger.*;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -13,7 +16,7 @@ import java.util.Iterator;
  * Time: 1:31:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PostTransaction implements TransactionWithQuery{
+public class PostTransaction implements TransactionWithQuery {
 
     final UnPostedTransaction tran;
 
@@ -30,22 +33,22 @@ public class PostTransaction implements TransactionWithQuery{
      * @param executionTime   The time at which this TransactionWithQuery is being executed. Every Transaction executes completely within a single moment in time. Logically, a Prevalent System's time does not pass during the execution of a Transaction.
      */
     public Object executeAndQuery(Object prevalentSystem, Date executionTime) throws Exception {
-        LedgerSystem system=(LedgerSystem) prevalentSystem;
-        TransactionTable table=system.getTransactionTable();
-        if (table.exists(tran.getId()))
-            throw new TransactionExistsException(null,tran.getId());
+        LedgerSystem system = (LedgerSystem) prevalentSystem;
+        TransactionTable table = system.getTransactionTable();
         if (table.exists(tran.getRequestId()))
-            throw new TransactionExistsException(null,tran.getRequestId());
+            throw new TransactionExistsException(null, tran.getRequestId());
+//        if (table.exists(tran.getReceiptId()))
+//            throw new TransactionExistsException(null,tran.getReceiptId());
 
-        table.register(tran.getId(),executionTime);
-        table.register(tran.getRequestId(),executionTime);
+        table.register(tran.getRequestId(), executionTime);
+//        table.register(tran.getReceiptId(),executionTime);
 
-        Iterator iter=tran.getItems();
+        Iterator iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            system.getBalanceTable().add(item.getBook(),item.getAmount());
+            system.getBalanceTable().add(item.getBook(), item.getAmount());
         }
 
-        return new PostedTransaction(tran,executionTime);
+        return new PostedTransaction(tran, executionTime);
     }
 }

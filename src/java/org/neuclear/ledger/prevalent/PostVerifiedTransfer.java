@@ -32,10 +32,10 @@ public class PostVerifiedTransfer implements TransactionWithQuery {
     public Object executeAndQuery(Object prevalentSystem, Date executionTime) throws Exception {
         LedgerSystem system = (LedgerSystem) prevalentSystem;
         TransactionTable table = system.getTransactionTable();
-        if (table.exists(tran.getId()))
-            throw new TransactionExistsException(null, tran.getId());
         if (table.exists(tran.getRequestId()))
             throw new TransactionExistsException(null, tran.getRequestId());
+//        if (table.exists(tran.getReceiptId()))
+//            throw new TransactionExistsException(null, tran.getReceiptId());
 
         Iterator iter = tran.getItems();
         // First lets check the balances
@@ -46,8 +46,8 @@ public class PostVerifiedTransfer implements TransactionWithQuery {
                 throw new InsufficientFundsException(null, item.getBook(), item.getAmount(), balance);
         }
         // We're ok so lets register them.
-        table.register(tran.getId(), executionTime);
         table.register(tran.getRequestId(), executionTime);
+//        table.register(tran.getReceiptId(), executionTime);
 
         // Now modify the balances
         iter = tran.getItems();

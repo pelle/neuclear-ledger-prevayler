@@ -2,7 +2,6 @@ package org.neuclear.ledger.prevalent;
 
 import gnu.trove.TDoubleProcedure;
 import gnu.trove.TObjectDoubleHashMap;
-import org.neuclear.ledger.LowlevelLedgerException;
 
 import java.io.Serializable;
 
@@ -25,7 +24,7 @@ public final class BalanceTable implements Serializable {
         return balances.put(id, nb);
     }
 
-    double getTestBalance() throws LowlevelLedgerException {
+    double getTestBalance() {
         TestBalanceCalculator calc = new TestBalanceCalculator();
         balances.forEachValue(calc);
         return calc.getBalance();

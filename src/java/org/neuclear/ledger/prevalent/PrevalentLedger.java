@@ -167,6 +167,10 @@ public class PrevalentLedger extends Ledger implements Serializable {
         return system.getHoldTable().get(idstring);  //To change body of implemented methods use File | Settings | File Templates.
     }
 
+    public void setReceiptId(String id, String receipt) throws LowlevelLedgerException, UnknownTransactionException {
+
+    }
+
     /**
      * Cancels a Held Transaction.
      *

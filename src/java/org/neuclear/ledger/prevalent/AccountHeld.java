@@ -4,10 +4,10 @@ import org.neuclear.ledger.PostedHeldTransaction;
 import org.neuclear.ledger.TransactionItem;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -17,7 +17,7 @@ import java.util.Iterator;
  * To change this template use File | Settings | File Templates.
  */
 public class AccountHeld implements Serializable {
-    private List holds= new ArrayList(1);
+    private List holds = new ArrayList(1);
     private HoldTable holdtable;
     private String id;
 
@@ -25,36 +25,38 @@ public class AccountHeld implements Serializable {
         this.holdtable = holdtable;
         this.id = id;
     }
-    public void add(final PostedHeldTransaction tran){
+
+    public void add(final PostedHeldTransaction tran) {
         holds.add(tran);
     }
 
-    double getBalance(){
-        final Date current=new Date();
-        Iterator iter=holds.iterator();
-        double balance=0;
-        PostedHeldTransaction expired=null;
+    double getBalance() {
+        final Date current = new Date();
+        Iterator iter = holds.iterator();
+        double balance = 0;
+        PostedHeldTransaction expired = null;
         while (iter.hasNext()) {
             PostedHeldTransaction transaction = (PostedHeldTransaction) iter.next();
-            if (transaction.getExpiryTime().after(current)){
-                Iterator items=transaction.getItems();
+            if (transaction.getExpiryTime().after(current)) {
+                Iterator items = transaction.getItems();
                 while (items.hasNext()) {
                     TransactionItem item = (TransactionItem) items.next();
-                    if(item.getBook().equals(id)&&item.getAmount()<0)
-                        balance+=item.getAmount();
+                    if (item.getBook().equals(id) && item.getAmount() < 0)
+                        balance += item.getAmount();
                 }
             } else {
-                expired=transaction;
+                expired = transaction;
             }
         }
-        if (expired!=null)
+        if (expired != null)
             holdtable.expire(expired);
         return balance;
     }
-    void expire(final PostedHeldTransaction dead){
+
+    void expire(final PostedHeldTransaction dead) {
         for (int i = 0; i < holds.size(); i++) {
             PostedHeldTransaction transaction = (PostedHeldTransaction) holds.get(i);
-            if (transaction.getId().equals(dead.getId())){
+            if (transaction.getRequestId().equals(dead.getRequestId())) {
                 holds.remove(i);
                 return;
             }
@@ -62,7 +64,8 @@ public class AccountHeld implements Serializable {
         }
         holds.remove(dead);
     }
-    int getHoldCount(){
+
+    int getHoldCount() {
         return holds.size();
     }
 }
