@@ -4,8 +4,6 @@ import org.neuclear.ledger.LedgerController;
 import org.neuclear.ledger.LowlevelLedgerException;
 import org.neuclear.ledger.tests.AbstractLedgerTest;
 
-import java.io.IOException;
-
 /**
  * Created by IntelliJ IDEA.
  * User: pelleb
@@ -19,12 +17,6 @@ public class PrevalentLedgerTest extends AbstractLedgerTest {
     }
 
     public LedgerController createLedger() throws LowlevelLedgerException {
-        try {
-            return new PrevalentLedgerController("test");
-        } catch (IOException e) {
-            throw new LowlevelLedgerException(e);
-        } catch (ClassNotFoundException e) {
-            throw new LowlevelLedgerException(e);
-        }
+        return new PrevalentLedgerController("test");
     }
 }

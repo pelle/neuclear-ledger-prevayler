@@ -36,10 +36,8 @@ public class PrevalentLedgerController extends LedgerController implements Seria
      * Transient PrevalentLedger
      *
      * @param id
-     * @throws IOException
-     * @throws ClassNotFoundException
      */
-    public PrevalentLedgerController(final String id) throws IOException, ClassNotFoundException {
+    public PrevalentLedgerController(final String id) {
         super(id);
         prevayler = PrevaylerFactory.createTransientPrevayler(new LedgerSystem(id));
         system = (LedgerSystem) prevayler.prevalentSystem();
