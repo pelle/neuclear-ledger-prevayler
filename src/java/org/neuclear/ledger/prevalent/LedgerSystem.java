@@ -1,6 +1,7 @@
 package org.neuclear.ledger.prevalent;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -9,10 +10,10 @@ import java.io.Serializable;
  * Time: 1:51:55 PM
  * To change this template use File | Settings | File Templates.
  */
-public final class LedgerSystem implements Serializable{
-    private BalanceTable balances=new BalanceTable();
-    private HoldTable holds=new HoldTable();
-    private TransactionTable transactions=new TransactionTable();
+public final class LedgerSystem implements Serializable {
+    private BalanceTable balances = new BalanceTable();
+    private HoldTable holds = new HoldTable();
+    private TransactionTable transactions = new TransactionTable();
     private String ledgerid;
 
     LedgerSystem(String ledgerid) {
@@ -36,11 +37,11 @@ public final class LedgerSystem implements Serializable{
         return holds;
     }
 
-    final double getBalance(String book){
+    final double getBalance(String book) {
         return balances.getBalance(book);
     }
 
-    final double getAvailableBalance(String book){
-        return getBalance(book)+holds.getHeldBalance(book);
+    final double getAvailableBalance(String book, final Date executionTime) {
+        return getBalance(book) + holds.getHeldBalance(book, executionTime);
     }
 }

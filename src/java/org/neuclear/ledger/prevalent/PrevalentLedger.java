@@ -94,7 +94,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
      * @param id A valid ID
      * @return The Transaction object
      */
-    public Date getTransactionTime(String id) throws LowlevelLedgerException, UnknownTransactionException, InvalidTransactionException, UnknownBookException {
+    public Date getTransactionTime(String id) throws LowlevelLedgerException, UnknownTransactionException {
         if (system.getTransactionTable().exists(id))
             return new Date(system.getTransactionTable().getTransactionTime(id));
         throw new UnknownTransactionException(this, id);
@@ -157,6 +157,22 @@ public class PrevalentLedger extends Ledger implements Serializable {
         }
     }
 
+    public boolean transactionExists(String id) throws LowlevelLedgerException {
+        try {
+            return ((Boolean) prevayler.execute(new DoesTransactionExist(id))).booleanValue();
+        } catch (Exception e) {
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
+    public boolean heldTransactionExists(String id) throws LowlevelLedgerException {
+        try {
+            return ((Boolean) prevayler.execute(new DoesHeldTransactionExist(id))).booleanValue();
+        } catch (Exception e) {
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
     /**
      * Searches for a Held Transaction based on its Transaction ID
      *
@@ -164,11 +180,23 @@ public class PrevalentLedger extends Ledger implements Serializable {
      * @return The Transaction object
      */
     public PostedHeldTransaction findHeldTransaction(String idstring) throws LowlevelLedgerException, UnknownTransactionException {
-        return system.getHoldTable().get(idstring);  //To change body of implemented methods use File | Settings | File Templates.
+        try {
+            final PostedHeldTransaction t = (PostedHeldTransaction) prevayler.execute(new FindHeldTransaction(idstring));
+            return t;
+        } catch (Exception e) {
+            if (e instanceof UnknownTransactionException)
+                throw (UnknownTransactionException) e;
+            throw new LowlevelLedgerException(e);
+        }
     }
 
     public void setReceiptId(String id, String receipt) throws LowlevelLedgerException, UnknownTransactionException {
+        prevayler.execute(new SetReceiptId(id, receipt));
 
+    }
+
+    public void setHeldReceiptId(String id, String receipt) throws LowlevelLedgerException, UnknownTransactionException {
+        prevayler.execute(new SetHeldReceiptId(id, receipt));
     }
 
     /**
@@ -180,11 +208,11 @@ public class PrevalentLedger extends Ledger implements Serializable {
      * @throws org.neuclear.ledger.UnknownTransactionException
      *
      */
-    public void performCancelHold(PostedHeldTransaction hold) throws LowlevelLedgerException, UnknownTransactionException {
+    public Date performCancelHold(PostedHeldTransaction hold) throws LowlevelLedgerException, UnknownTransactionException {
         try {
             System.out.println("Perform Cancel");
 
-            prevayler.execute(new CancelHeldTransaction(hold));
+            return (Date) prevayler.execute(new CancelHeldTransaction(hold));
         } catch (Exception e) {
             if (e instanceof UnknownTransactionException)
                 throw (UnknownTransactionException) e;

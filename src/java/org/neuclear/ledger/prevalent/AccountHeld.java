@@ -30,19 +30,20 @@ public class AccountHeld implements Serializable {
         holds.add(tran);
     }
 
-    double getBalance() {
-        final Date current = new Date();
+    double getBalance(final Date current) {
         Iterator iter = holds.iterator();
         double balance = 0;
         PostedHeldTransaction expired = null;
         while (iter.hasNext()) {
             PostedHeldTransaction transaction = (PostedHeldTransaction) iter.next();
             if (transaction.getExpiryTime().after(current)) {
-                Iterator items = transaction.getItems();
-                while (items.hasNext()) {
-                    TransactionItem item = (TransactionItem) items.next();
-                    if (item.getBook().equals(id) && item.getAmount() < 0)
-                        balance += item.getAmount();
+                if (transaction.getReceiptId() != null) {
+                    Iterator items = transaction.getItems();
+                    while (items.hasNext()) {
+                        TransactionItem item = (TransactionItem) items.next();
+                        if (item.getBook().equals(id) && item.getAmount() < 0)
+                            balance += item.getAmount();
+                    }
                 }
             } else {
                 expired = transaction;

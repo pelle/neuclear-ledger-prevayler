@@ -41,7 +41,7 @@ public class PostVerifiedTransfer implements TransactionWithQuery {
         // First lets check the balances
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            final double balance = system.getAvailableBalance(item.getBook());
+            final double balance = system.getAvailableBalance(item.getBook(), executionTime);
             if (item.getAmount() < 0 && balance + item.getAmount() < 0)
                 throw new InsufficientFundsException(null, item.getBook(), item.getAmount(), balance);
         }

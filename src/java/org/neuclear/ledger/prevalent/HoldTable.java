@@ -5,6 +5,7 @@ import org.neuclear.ledger.TransactionExistsException;
 import org.neuclear.ledger.TransactionItem;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 
@@ -15,10 +16,10 @@ public final class HoldTable implements Serializable {
     private final HashMap accounts = new HashMap();
     private final HashMap transactions = new HashMap();
 
-    double getHeldBalance(final String id) {
+    double getHeldBalance(final String id, final Date current) {
         if (!accounts.containsKey(id))
             return 0;
-        return ((AccountHeld) accounts.get(id)).getBalance();
+        return ((AccountHeld) accounts.get(id)).getBalance(current);
 
     }
 

@@ -1,7 +1,7 @@
 package org.neuclear.ledger.prevalent;
 
 
-import org.neuclear.ledger.*;
+import org.neuclear.ledger.PostedHeldTransaction;
 
 import java.util.Date;
 
@@ -13,7 +13,7 @@ import java.util.Date;
  * Time: 1:31:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class CancelHeldTransaction implements org.prevayler.Transaction{
+public class CancelHeldTransaction implements org.prevayler.TransactionWithQuery {
 
     final PostedHeldTransaction tran;
 
@@ -29,10 +29,11 @@ public class CancelHeldTransaction implements org.prevayler.Transaction{
      * @param prevalentSystem The system on which this Transaction will execute.
      * @param executionTime   The time at which this Transaction is being executed. Every Transaction executes completely within a single moment in time. Logically, a Prevalent System's time does not pass during the execution of a Transaction.
      */
-    public void executeOn(Object prevalentSystem, Date executionTime) {
-        LedgerSystem system=(LedgerSystem) prevalentSystem;
-        HoldTable table=system.getHoldTable();
+    public Object executeAndQuery(Object prevalentSystem, Date executionTime) {
+        LedgerSystem system = (LedgerSystem) prevalentSystem;
+        HoldTable table = system.getHoldTable();
         System.out.println("Execute Cancel");
         table.expire(tran);
+        return executionTime;
     }
 }
