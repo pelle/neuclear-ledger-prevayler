@@ -1,14 +1,10 @@
 package org.neuclear.ledger.prevalent;
 
-import org.neuclear.commons.NeuClearException;
 import org.neuclear.ledger.Ledger;
 import org.neuclear.ledger.LowlevelLedgerException;
-import org.neuclear.ledger.UnknownLedgerException;
 import org.neuclear.ledger.tests.AbstractLedgerTest;
 
-import javax.naming.NamingException;
 import java.io.IOException;
-import java.sql.SQLException;
 
 /**
  * Created by IntelliJ IDEA.
@@ -18,7 +14,7 @@ import java.sql.SQLException;
  * To change this template use File | Settings | File Templates.
  */
 public class PrevalentLedgerTest extends AbstractLedgerTest {
-    public PrevalentLedgerTest(String s) throws LowlevelLedgerException, UnknownLedgerException, SQLException, NamingException, IOException, NeuClearException {
+    public PrevalentLedgerTest(String s) {
         super(s);
     }
 
