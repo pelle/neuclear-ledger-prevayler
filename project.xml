@@ -20,10 +20,10 @@
 
     <repository>
         <connection>
-         scm:cvs:pserver:anonymous@cvs.neuclear.sourceforge.net:/cvsroot/neuclear:neuclear-ledger-prevalent
+         scm:cvs:pserver:anonymous@cvs.sourceforge.net:/cvsroot/neuclear:neuclear-ledger-prevalent
         </connection>
         <url>
-      http://cvs.sourceforge.net/cgi-bin/viewcvs.cgi/neuclear/neuclear-ledger-prevalent/
+      http://cvs.sourceforge.net/viewcvs.py/neuclear/neuclear-ledger-prevalent/
         </url>
     </repository>
 
