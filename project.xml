@@ -61,7 +61,7 @@
     <dependencies>
         <dependency>
             <id>neuclear-ledger</id>
-            <version>0.5T</version>
+            <version>0.5</version>
         </dependency>
 
         <dependency>
