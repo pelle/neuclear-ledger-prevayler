@@ -1,7 +1,7 @@
 package org.neuclear.ledger.prevalent;
 
-import org.prevayler.TransactionWithQuery;
 import org.neuclear.ledger.*;
+import org.prevayler.TransactionWithQuery;
 
 import java.util.Date;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ import java.util.Iterator;
  * Time: 1:31:57 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PostVerifiedTransfer implements TransactionWithQuery{
+public class PostVerifiedTransfer implements TransactionWithQuery {
 
     final UnPostedTransaction tran;
 
@@ -30,31 +30,32 @@ public class PostVerifiedTransfer implements TransactionWithQuery{
      * @param executionTime   The time at which this TransactionWithQuery is being executed. Every Transaction executes completely within a single moment in time. Logically, a Prevalent System's time does not pass during the execution of a Transaction.
      */
     public Object executeAndQuery(Object prevalentSystem, Date executionTime) throws Exception {
-        LedgerSystem system=(LedgerSystem) prevalentSystem;
-        TransactionTable table=system.getTransactionTable();
+        LedgerSystem system = (LedgerSystem) prevalentSystem;
+        TransactionTable table = system.getTransactionTable();
         if (table.exists(tran.getId()))
-            throw new TransactionExistsException(null,tran.getId());
+            throw new TransactionExistsException(null, tran.getId());
         if (table.exists(tran.getRequestId()))
-            throw new TransactionExistsException(null,tran.getRequestId());
+            throw new TransactionExistsException(null, tran.getRequestId());
 
-        Iterator iter=tran.getItems();
+        Iterator iter = tran.getItems();
         // First lets check the balances
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            if (system.getAvailableBalance(item.getBook())+item.getAmount()<0)
-                throw new InsufficientFundsException(null,item.getBook(),item.getAmount());
+            final double balance = system.getAvailableBalance(item.getBook());
+            if (item.getAmount() < 0 && balance + item.getAmount() < 0)
+                throw new InsufficientFundsException(null, item.getBook(), item.getAmount(), balance);
         }
         // We're ok so lets register them.
-        table.register(tran.getId(),executionTime);
-        table.register(tran.getRequestId(),executionTime);
+        table.register(tran.getId(), executionTime);
+        table.register(tran.getRequestId(), executionTime);
 
         // Now modify the balances
-        iter=tran.getItems();
+        iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            system.getBalanceTable().add(item.getBook(),item.getAmount());
+            system.getBalanceTable().add(item.getBook(), item.getAmount());
         }
 
-        return new PostedTransaction(tran,executionTime);
+        return new PostedTransaction(tran, executionTime);
     }
 }

@@ -1,12 +1,12 @@
 package org.neuclear.ledger.prevalent;
 
 import org.neuclear.ledger.*;
-import org.prevayler.PrevaylerFactory;
 import org.prevayler.Prevayler;
+import org.prevayler.PrevaylerFactory;
 
-import java.util.Date;
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * Created by IntelliJ IDEA.
@@ -21,8 +21,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
     public PrevalentLedger(final String id, final String basedir) throws IOException, ClassNotFoundException {
         super(id);
         prevayler = PrevaylerFactory.createPrevayler(new LedgerSystem(id), basedir);
-        system=(LedgerSystem) prevayler.prevalentSystem();
-
+        system = (LedgerSystem) prevayler.prevalentSystem();
     }
 
     /**
@@ -38,11 +37,11 @@ public class PrevalentLedger extends Ledger implements Serializable {
             return (PostedTransaction) prevayler.execute(new PostTransaction(trans));
         } catch (Exception e) {
             if (e instanceof InvalidTransactionException)
-                throw (InvalidTransactionException)e;
+                throw (InvalidTransactionException) e;
             if (e instanceof UnBalancedTransactionException)
-                throw (UnBalancedTransactionException)e;
+                throw (UnBalancedTransactionException) e;
             if (e instanceof LowlevelLedgerException)
-                throw (LowlevelLedgerException)e;
+                throw (LowlevelLedgerException) e;
             throw new LowlevelLedgerException(e);
         }
     }
@@ -58,11 +57,11 @@ public class PrevalentLedger extends Ledger implements Serializable {
             return (PostedTransaction) prevayler.execute(new PostVerifiedTransfer(trans));
         } catch (Exception e) {
             if (e instanceof InvalidTransactionException)
-                throw (InvalidTransactionException)e;
+                throw (InvalidTransactionException) e;
             if (e instanceof UnBalancedTransactionException)
-                throw (UnBalancedTransactionException)e;
+                throw (UnBalancedTransactionException) e;
             if (e instanceof LowlevelLedgerException)
-                throw (LowlevelLedgerException)e;
+                throw (LowlevelLedgerException) e;
             throw new LowlevelLedgerException(e);
         }
     }
@@ -80,11 +79,11 @@ public class PrevalentLedger extends Ledger implements Serializable {
             return (PostedHeldTransaction) prevayler.execute(new PostHeldTransaction(trans));
         } catch (Exception e) {
             if (e instanceof InvalidTransactionException)
-                throw (InvalidTransactionException)e;
+                throw (InvalidTransactionException) e;
             if (e instanceof UnBalancedTransactionException)
-                throw (UnBalancedTransactionException)e;
+                throw (UnBalancedTransactionException) e;
             if (e instanceof LowlevelLedgerException)
-                throw (LowlevelLedgerException)e;
+                throw (LowlevelLedgerException) e;
             throw new LowlevelLedgerException(e);
         }
     }
@@ -98,7 +97,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
     public Date getTransactionTime(String id) throws LowlevelLedgerException, UnknownTransactionException, InvalidTransactionException, UnknownBookException {
         if (system.getTransactionTable().exists(id))
             return new Date(system.getTransactionTable().getTransactionTime(id));
-        throw new UnknownTransactionException(this,id);
+        throw new UnknownTransactionException(this, id);
     }
 
     /**
@@ -124,7 +123,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
 
     public double getBalance(String book) throws LowlevelLedgerException {
         try {
-            return ((Double)prevayler.execute(new GetBalanceQuery(book))).doubleValue();
+            return ((Double) prevayler.execute(new GetBalanceQuery(book))).doubleValue();
         } catch (Exception e) {
             throw new LowlevelLedgerException(e);
         }
@@ -152,7 +151,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
 
     public double getAvailableBalance(String book) throws LowlevelLedgerException {
         try {
-            return ((Double)prevayler.execute(new GetAvailableBalanceQuery(book))).doubleValue();
+            return ((Double) prevayler.execute(new GetAvailableBalanceQuery(book))).doubleValue();
         } catch (Exception e) {
             throw new LowlevelLedgerException(e);
         }
@@ -184,23 +183,23 @@ public class PrevalentLedger extends Ledger implements Serializable {
             prevayler.execute(new CancelHeldTransaction(hold));
         } catch (Exception e) {
             if (e instanceof UnknownTransactionException)
-                throw (UnknownTransactionException)e;
+                throw (UnknownTransactionException) e;
             if (e instanceof LowlevelLedgerException)
-                throw (LowlevelLedgerException)e;
+                throw (LowlevelLedgerException) e;
             throw new LowlevelLedgerException(e);
         }
     }
 
-    public PostedTransaction performCompleteHold(PostedHeldTransaction hold, double amount,  String comment) throws InvalidTransactionException, LowlevelLedgerException, TransactionExpiredException {
+    public PostedTransaction performCompleteHold(PostedHeldTransaction hold, double amount, String comment) throws InvalidTransactionException, LowlevelLedgerException, TransactionExpiredException {
         try {
-            return (PostedTransaction) prevayler.execute(new CompleteHeldTransaction(hold,amount,comment));
+            return (PostedTransaction) prevayler.execute(new CompleteHeldTransaction(hold, amount, comment));
         } catch (Exception e) {
             if (e instanceof InvalidTransactionException)
-                throw (InvalidTransactionException)e;
+                throw (InvalidTransactionException) e;
             if (e instanceof TransactionExpiredException)
-                throw (TransactionExpiredException)e;
+                throw (TransactionExpiredException) e;
             if (e instanceof LowlevelLedgerException)
-                throw (LowlevelLedgerException)e;
+                throw (LowlevelLedgerException) e;
 
             throw new LowlevelLedgerException(e);
         }
