@@ -1,76 +1,110 @@
 package org.neuclear.ledger.prevalent;
 
-import org.neuclear.ledger.PostedHeldTransaction;
-import org.neuclear.ledger.TransactionExistsException;
-import org.neuclear.ledger.TransactionItem;
+/*
+ *  The NeuClear Project and it's libraries are
+ *  (c) 2002-2004 Antilles Software Ventures SA
+ *  For more information see: http://neuclear.org
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+import org.neuclear.ledger.*;
 
 import java.io.Serializable;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
 /**
  * This contains the balances of all the accounts
  */
 public final class BookTable implements Serializable {
-    private final HashMap accounts = new HashMap();
-    private final HashMap transactions = new HashMap();
+    private final HashMap accounts;
+    private final HashMap held;
 
-    double getHeldBalance(final String id, final Date current) {
-        if (!accounts.containsKey(id))
-            return 0;
-        return ((PrevalentBook) accounts.get(id)).getHeldBalance(current);
-
+    public BookTable() {
+        accounts = new HashMap();
+        held = new HashMap();
     }
 
+
     PrevalentBook getBook(final String id) {
+//        printBalances();
+//        System.out.println("Getting "+id);
         return (PrevalentBook) accounts.get(id);
     }
 
-    void addBook(PrevalentBook book) {
+    void add(PrevalentBook book) {
+//        System.out.println("Adding "+book.getId());
         accounts.put(book.getId(), book);
+//        printBalances();
+//        System.out.println("Added Book");
     }
 
-    public boolean exists(String id) {
-        return transactions.containsKey(id);
+    public boolean heldExists(String id) {
+        return held.containsKey(id);
     }
 
     public PostedHeldTransaction getHeld(String id) {
-        return (PostedHeldTransaction) transactions.get(id);
+        return (PostedHeldTransaction) held.get(id);
     }
 
     void add(PostedHeldTransaction tran) throws TransactionExistsException {
-        if (transactions.containsKey(tran.getRequestId()))
+        if (held.containsKey(tran.getRequestId()))
             throw new TransactionExistsException(null, tran.getRequestId());
         Iterator items = tran.getItems();
         while (items.hasNext()) {
             TransactionItem item = (TransactionItem) items.next();
-            PrevalentBook book = (PrevalentBook) accounts.get(item.getBook());
-            book.add(tran);
+            Book book = (Book) item.getBook();
+            getBook(book.getId()).add(tran);
         }
-        transactions.put(tran.getRequestId(), tran);
+        held.put(tran.getRequestId(), tran);
+//        printBalances();
     }
 
-    public void expire(PostedHeldTransaction tran) {
-        if (!transactions.containsKey(tran.getRequestId()))
-            return;
-        System.out.println("expire");
+    void add(UnPostedTransaction tran) throws TransactionExistsException {
         Iterator items = tran.getItems();
         while (items.hasNext()) {
             TransactionItem item = (TransactionItem) items.next();
-            PrevalentBook held = (PrevalentBook) accounts.get(item.getBook());
-            if (held != null) {
-                held.expire(tran);
-                if (held.getHoldCount() == 0)
-                    accounts.remove(item.getBook());
-            }
+            Book book = (Book) item.getBook();
+            getBook(book.getId()).add(item.getAmount());
         }
-        transactions.remove(tran.getRequestId());
+//        printBalances();
+    }
+
+
+    double getTestBalance() {
+        double balance = 0;
+        Iterator iter = accounts.entrySet().iterator();
+        while (iter.hasNext()) {
+            PrevalentBook book = (PrevalentBook) ((Map.Entry) iter.next()).getValue();
+            balance += book.getBalance();
+        }
+        return balance;
+    }
+
+    void printBalances() {
+        Iterator iter = accounts.entrySet().iterator();
+        while (iter.hasNext()) {
+            PrevalentBook book = (PrevalentBook) ((Map.Entry) iter.next()).getValue();
+            System.out.println(book);
+        }
 
     }
 
-    public double getTestBalance() {
-
-        return 0;
+    void expire(PostedHeldTransaction tran) {
+        PrevalentBook.expire(tran, this);
     }
 }

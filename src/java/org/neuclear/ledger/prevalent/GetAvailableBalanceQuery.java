@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class GetAvailableBalanceQuery implements Query {
     public GetAvailableBalanceQuery(String book) {
-        this.book = book;
+        this.bookid = book;
     }
 
     /**
@@ -24,8 +24,11 @@ public class GetAvailableBalanceQuery implements Query {
      */
     public Object query(Object system, Date executionTime) throws Exception {
         final LedgerSystem ledgsys = ((LedgerSystem) system);
-        return new Double(ledgsys.getBookTable().getBook(book).getAvailableBalance(executionTime));
+        final PrevalentBook book = ledgsys.getBookTable().getBook(this.bookid);
+        if (book == null)
+            return new Double(0);
+        return new Double(book.getAvailableBalance(executionTime));
     }
 
-    private final String book;
+    private final String bookid;
 }

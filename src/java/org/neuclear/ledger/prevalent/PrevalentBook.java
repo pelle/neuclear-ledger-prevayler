@@ -1,13 +1,33 @@
 package org.neuclear.ledger.prevalent;
 
+/*
+ *  The NeuClear Project and it's libraries are
+ *  (c) 2002-2004 Antilles Software Ventures SA
+ *  For more information see: http://neuclear.org
+ *
+ *  This library is free software; you can redistribute it and/or
+ *  modify it under the terms of the GNU Lesser General Public
+ *  License as published by the Free Software Foundation; either
+ *  version 2.1 of the License, or (at your option) any later version.
+ *
+ *  This library is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ *  Lesser General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public
+ *  License along with this library; if not, write to the Free Software
+ *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
 import org.neuclear.ledger.Book;
 import org.neuclear.ledger.PostedHeldTransaction;
 import org.neuclear.ledger.TransactionItem;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
-import java.util.List;
 
 /**
  * Created by IntelliJ IDEA.
@@ -16,24 +36,23 @@ import java.util.List;
  * Time: 5:49:35 PM
  * To change this template use File | Settings | File Templates.
  */
-public final class PrevalentBook extends Book {
-    private List holds = null;
-    private BookTable holdtable;
-    private double balance = 0;
+final class PrevalentBook extends Book implements Serializable {
+    private ArrayList holds = null;
+    private double balance;
+    private BookTable books;
 
-    public PrevalentBook(String id, String nickname, String type, String source, Date registered, Date updated, String registrationid, BookTable holdtable) {
+    PrevalentBook(String id, String nickname, String type, String source, Date registered, Date updated, String registrationid, BookTable books) {
         super(id, nickname, type, source, registered, updated, registrationid);
-        this.holdtable = holdtable;
-        this.id = id;
+        balance = 0;
+        this.books = books;
     }
 
-    public PrevalentBook(String id, Date registered, BookTable holdtable) {
+    PrevalentBook(String id, Date registered, BookTable books) {
         super(id, registered);
-        this.holdtable = holdtable;
-        this.id = id;
+        this.books = books;
     }
 
-    final public void add(final PostedHeldTransaction tran) {
+    final void add(final PostedHeldTransaction tran) {
         if (holds == null)
             holds = new ArrayList(1);
         holds.add(tran);
@@ -41,6 +60,7 @@ public final class PrevalentBook extends Book {
 
     final double add(double amount) {
         balance += amount;
+//        System.out.println("New Balance of "+getId()+" is "+balance);
         return balance;
     }
 
@@ -57,7 +77,7 @@ public final class PrevalentBook extends Book {
                     Iterator items = transaction.getItems();
                     while (items.hasNext()) {
                         TransactionItem item = (TransactionItem) items.next();
-                        if (item.getBook().equals(id) && item.getAmount() < 0)
+                        if (item.getBook().getId().equals(id) && item.getAmount() < 0)
                             balance += item.getAmount();
                     }
                 }
@@ -66,7 +86,7 @@ public final class PrevalentBook extends Book {
             }
         }
         if (expired != null)
-            holdtable.expire(expired);
+            expire(expired, books);
         return balance;
     }
 
@@ -79,40 +99,54 @@ public final class PrevalentBook extends Book {
     }
 
 
-    final void expire(final PostedHeldTransaction dead) {
+    static final void expire(final PostedHeldTransaction dead, final BookTable books) {
+        Iterator iter = dead.getItems();
+        while (iter.hasNext()) {
+            TransactionItem item = (TransactionItem) iter.next();
+            books.getBook(item.getBook().getId()).remove(dead);
+        }
+    }
+
+    private void remove(final PostedHeldTransaction dead) {
         for (int i = 0; i < holds.size(); i++) {
             PostedHeldTransaction transaction = (PostedHeldTransaction) holds.get(i);
             if (transaction.getRequestId().equals(dead.getRequestId())) {
                 holds.remove(i);
+                holds.trimToSize();
                 return;
             }
-
         }
-        holds.remove(dead);
     }
 
     final int getHoldCount() {
         return (holds == null) ? 0 : holds.size();
     }
 
-    public void setNickname(String nickname) {
+    void setNickname(String nickname) {
         this.nickname = nickname;
     }
 
-    public void setType(String type) {
+    void setType(String type) {
         this.type = type;
     }
 
-    public void setSource(String source) {
+    void setSource(String source) {
         this.source = source;
     }
 
-    public void setUpdated(Date updated) {
+    void setUpdated(Date updated) {
         this.updated = updated;
     }
 
-    public void setRegistrationId(String registrationid) {
+    void setRegistrationId(String registrationid) {
         this.registrationid = registrationid;
     }
 
+    public String toString() {
+        return "Book: " + getId() + " Balance: " + getBalance();
+    }
+
+    Book createBook() {
+        return new Book(id, nickname, type, source, registered, updated, registrationid);
+    }
 }

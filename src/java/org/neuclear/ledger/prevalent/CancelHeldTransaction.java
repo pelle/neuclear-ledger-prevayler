@@ -33,7 +33,7 @@ public class CancelHeldTransaction implements org.prevayler.TransactionWithQuery
         LedgerSystem system = (LedgerSystem) prevalentSystem;
         BookTable table = system.getBookTable();
         System.out.println("Execute Cancel");
-        table.expire(tran);
+        system.getBookTable().expire(tran);
         return executionTime;
     }
 }

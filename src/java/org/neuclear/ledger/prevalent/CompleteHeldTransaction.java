@@ -41,7 +41,7 @@ public class CompleteHeldTransaction implements TransactionWithQuery {
         if (table.exists(tran.getRequestId()))
             throw new TransactionExistsException(null, tran.getRequestId());
         BookTable holds = system.getBookTable();
-        holds.expire(tran);
+        system.getBookTable().expire(tran);
 
         table.register(tran.getRequestId(), executionTime);
 
@@ -49,7 +49,7 @@ public class CompleteHeldTransaction implements TransactionWithQuery {
         Iterator iter = posted.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            ((PrevalentBook) item.getBook()).add(item.getAmount());
+            system.getBookTable().getBook(item.getBook().getId()).add(item.getAmount());
         }
         return posted;
     }

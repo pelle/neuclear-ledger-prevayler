@@ -2,12 +2,10 @@ package org.neuclear.ledger.prevalent;
 
 import org.neuclear.ledger.PostedTransaction;
 import org.neuclear.ledger.TransactionExistsException;
-import org.neuclear.ledger.TransactionItem;
 import org.neuclear.ledger.UnPostedTransaction;
 import org.prevayler.TransactionWithQuery;
 
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -37,19 +35,14 @@ public class PostTransaction implements TransactionWithQuery {
         TransactionTable table = system.getTransactionTable();
         if (table.exists(tran.getRequestId()))
             throw new TransactionExistsException(null, tran.getRequestId());
-//        if (table.exists(tran.getReceiptId()))
+//        if (table.heldExists(tran.getReceiptId()))
 //            throw new TransactionExistsException(null,tran.getReceiptId());
 
         table.register(tran.getRequestId(), executionTime);
 //        table.register(tran.getReceiptId(),executionTime);
+        System.out.println("Processing Transfer");
 
-        Iterator iter = tran.getItems();
-        while (iter.hasNext()) {
-            TransactionItem item = (TransactionItem) iter.next();
-            ((PrevalentBook) item.getBook()).add(item.getAmount());
-
-        }
-
+        system.getBookTable().add(tran);
         return new PostedTransaction(tran, executionTime);
     }
 }
