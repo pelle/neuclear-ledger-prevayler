@@ -24,7 +24,7 @@ public class GetAvailableBalanceQuery implements Query {
      */
     public Object query(Object system, Date executionTime) throws Exception {
         final LedgerSystem ledgsys = ((LedgerSystem) system);
-        return new Double(ledgsys.getAvailableBalance(book, executionTime));
+        return new Double(ledgsys.getBookTable().getBook(book).getAvailableBalance(executionTime));
     }
 
     private final String book;

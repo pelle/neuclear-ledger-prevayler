@@ -31,7 +31,7 @@ public class PostHeldTransaction implements TransactionWithQuery {
      */
     public Object executeAndQuery(Object prevalentSystem, Date executionTime) throws Exception {
         LedgerSystem system = (LedgerSystem) prevalentSystem;
-        HoldTable table = system.getHoldTable();
+        BookTable table = system.getBookTable();
         if (table.exists(tran.getRequestId()))
             throw new TransactionExistsException(null, tran.getRequestId());
 //        if (table.exists(tran.getReceiptId()))
@@ -39,8 +39,8 @@ public class PostHeldTransaction implements TransactionWithQuery {
         Iterator iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            if (system.getAvailableBalance(item.getBook(), executionTime) + item.getAmount() < 0)
-                throw new InsufficientFundsException(null, item.getBook(), item.getAmount());
+            if (((PrevalentBook) item.getBook()).getAvailableBalance(executionTime) + item.getAmount() < 0)
+                throw new InsufficientFundsException(null, item.getBook().getId(), item.getAmount());
         }
 
         PostedHeldTransaction posted = new PostedHeldTransaction(tran, executionTime);

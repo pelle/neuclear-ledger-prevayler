@@ -195,6 +195,38 @@ public class PrevalentLedger extends Ledger implements Serializable {
     }
 
     /**
+     * Register a Book in the system
+     *
+     * @param id
+     * @param nickname
+     * @param type
+     * @param source
+     * @param registrationid
+     * @return
+     * @throws org.neuclear.ledger.LowlevelLedgerException
+     *
+     */
+    public Book registerBook(String id, String nickname, String type, String source, String registrationid) throws LowlevelLedgerException {
+        try {
+            return (Book) prevayler.execute(new RegisterBook(id, nickname, type, source, registrationid));
+        } catch (Exception e) {
+            if (e instanceof LowlevelLedgerException)
+                throw (LowlevelLedgerException) e;
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
+    public Book getBook(String id) throws LowlevelLedgerException {
+        try {
+            return (Book) prevayler.execute(new GetBook(id));
+        } catch (Exception e) {
+            if (e instanceof LowlevelLedgerException)
+                throw (LowlevelLedgerException) e;
+            throw new LowlevelLedgerException(e);
+        }
+    }
+
+    /**
      * Searches for a Held Transaction based on its Transaction ID
      *
      * @param idstring A valid ID

@@ -19,7 +19,7 @@ public class GetTestBalanceQuery implements Query {
      * @throws Exception Any Exception encountered by this Query.
      */
     public Object query(Object system, Date executionTime) throws Exception {
-        return new Double(((LedgerSystem) system).getBalanceTable().getTestBalance());
+        return new Double(((LedgerSystem) system).getBookTable().getTestBalance());
     }
 
 }

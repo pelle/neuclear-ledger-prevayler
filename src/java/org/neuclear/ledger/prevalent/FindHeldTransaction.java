@@ -22,8 +22,13 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: FindHeldTransaction.java,v 1.1 2004/04/06 22:56:36 pelle Exp $
+$Id: FindHeldTransaction.java,v 1.2 2004/04/20 00:17:56 pelle Exp $
 $Log: FindHeldTransaction.java,v $
+Revision 1.2  2004/04/20 00:17:56  pelle
+Refactored to use PrevalentBook and BookTable for most stuff.
+Added new Transactions for dealing with books.
+There is still some sort of serialization error.
+
 Revision 1.1  2004/04/06 22:56:36  pelle
 Updated with new API Changes
 
@@ -49,7 +54,7 @@ public class FindHeldTransaction implements Query {
      */
     public Object query(Object prevalentSystem, Date executionTime) throws Exception {
         LedgerSystem system = (LedgerSystem) prevalentSystem;
-        return system.getHoldTable().get(id);
+        return system.getBookTable().getHeld(id);
     }
 }
 

@@ -46,7 +46,8 @@ public class PostTransaction implements TransactionWithQuery {
         Iterator iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            system.getBalanceTable().add(item.getBook(), item.getAmount());
+            ((PrevalentBook) item.getBook()).add(item.getAmount());
+
         }
 
         return new PostedTransaction(tran, executionTime);

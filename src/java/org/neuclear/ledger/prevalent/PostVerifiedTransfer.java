@@ -41,9 +41,9 @@ public class PostVerifiedTransfer implements TransactionWithQuery {
         // First lets check the balances
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            final double balance = system.getAvailableBalance(item.getBook(), executionTime);
+            final double balance = ((PrevalentBook) item.getBook()).getAvailableBalance(executionTime);
             if (item.getAmount() < 0 && balance + item.getAmount() < 0)
-                throw new InsufficientFundsException(null, item.getBook(), item.getAmount(), balance);
+                throw new InsufficientFundsException(null, item.getBook().getId(), item.getAmount(), balance);
         }
         // We're ok so lets register them.
         table.register(tran.getRequestId(), executionTime);
@@ -53,7 +53,7 @@ public class PostVerifiedTransfer implements TransactionWithQuery {
         iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            system.getBalanceTable().add(item.getBook(), item.getAmount());
+            ((PrevalentBook) item.getBook()).add(item.getAmount());
         }
 
         return new PostedTransaction(tran, executionTime);

@@ -23,8 +23,13 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: SetHeldReceiptId.java,v 1.1 2004/04/06 22:56:36 pelle Exp $
+$Id: SetHeldReceiptId.java,v 1.2 2004/04/20 00:17:56 pelle Exp $
 $Log: SetHeldReceiptId.java,v $
+Revision 1.2  2004/04/20 00:17:56  pelle
+Refactored to use PrevalentBook and BookTable for most stuff.
+Added new Transactions for dealing with books.
+There is still some sort of serialization error.
+
 Revision 1.1  2004/04/06 22:56:36  pelle
 Updated with new API Changes
 
@@ -53,8 +58,8 @@ public class SetHeldReceiptId implements Transaction {
      */
     public void executeOn(Object prevalentSystem, Date executionTime) {
         LedgerSystem system = (LedgerSystem) prevalentSystem;
-        HoldTable table = system.getHoldTable();
-        PostedHeldTransaction tran = table.get(requestid);
+        BookTable table = system.getBookTable();
+        PostedHeldTransaction tran = table.getHeld(requestid);
         if (tran != null && tran.getReceiptId() == null)
             tran.setReceiptId(receiptid);
     }

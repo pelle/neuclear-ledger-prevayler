@@ -20,7 +20,7 @@ public class PrevalentLedgerTest extends AbstractLedgerTest {
 
     public Ledger createLedger() throws LowlevelLedgerException {
         try {
-            return new PrevalentLedger("test", "target/test-data/ledger/");
+            return new PrevalentLedger("test");
         } catch (IOException e) {
             throw new LowlevelLedgerException(e);
         } catch (ClassNotFoundException e) {

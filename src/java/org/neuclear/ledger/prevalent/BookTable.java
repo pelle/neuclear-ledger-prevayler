@@ -12,22 +12,30 @@ import java.util.Iterator;
 /**
  * This contains the balances of all the accounts
  */
-public final class HoldTable implements Serializable {
+public final class BookTable implements Serializable {
     private final HashMap accounts = new HashMap();
     private final HashMap transactions = new HashMap();
 
     double getHeldBalance(final String id, final Date current) {
         if (!accounts.containsKey(id))
             return 0;
-        return ((AccountHeld) accounts.get(id)).getBalance(current);
+        return ((PrevalentBook) accounts.get(id)).getHeldBalance(current);
 
+    }
+
+    PrevalentBook getBook(final String id) {
+        return (PrevalentBook) accounts.get(id);
+    }
+
+    void addBook(PrevalentBook book) {
+        accounts.put(book.getId(), book);
     }
 
     public boolean exists(String id) {
         return transactions.containsKey(id);
     }
 
-    public PostedHeldTransaction get(String id) {
+    public PostedHeldTransaction getHeld(String id) {
         return (PostedHeldTransaction) transactions.get(id);
     }
 
@@ -37,12 +45,8 @@ public final class HoldTable implements Serializable {
         Iterator items = tran.getItems();
         while (items.hasNext()) {
             TransactionItem item = (TransactionItem) items.next();
-            AccountHeld held = (AccountHeld) accounts.get(item.getBook());
-            if (held == null) {
-                held = new AccountHeld(this, item.getBook());
-                accounts.put(item.getBook(), held);
-            }
-            held.add(tran);
+            PrevalentBook book = (PrevalentBook) accounts.get(item.getBook());
+            book.add(tran);
         }
         transactions.put(tran.getRequestId(), tran);
     }
@@ -54,7 +58,7 @@ public final class HoldTable implements Serializable {
         Iterator items = tran.getItems();
         while (items.hasNext()) {
             TransactionItem item = (TransactionItem) items.next();
-            AccountHeld held = (AccountHeld) accounts.get(item.getBook());
+            PrevalentBook held = (PrevalentBook) accounts.get(item.getBook());
             if (held != null) {
                 held.expire(tran);
                 if (held.getHoldCount() == 0)
@@ -63,5 +67,10 @@ public final class HoldTable implements Serializable {
         }
         transactions.remove(tran.getRequestId());
 
+    }
+
+    public double getTestBalance() {
+
+        return 0;
     }
 }

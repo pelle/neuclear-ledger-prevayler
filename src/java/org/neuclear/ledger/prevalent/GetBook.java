@@ -1,6 +1,6 @@
 package org.neuclear.ledger.prevalent;
 
-import org.prevayler.Query;
+import org.prevayler.TransactionWithQuery;
 
 import java.util.Date;
 
@@ -22,9 +22,9 @@ You should have received a copy of the GNU Lesser General Public
 License along with this library; if not, write to the Free Software
 Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 
-$Id: DoesHeldTransactionExist.java,v 1.2 2004/04/20 00:17:56 pelle Exp $
-$Log: DoesHeldTransactionExist.java,v $
-Revision 1.2  2004/04/20 00:17:56  pelle
+$Id: GetBook.java,v 1.1 2004/04/20 00:17:56 pelle Exp $
+$Log: GetBook.java,v $
+Revision 1.1  2004/04/20 00:17:56  pelle
 Refactored to use PrevalentBook and BookTable for most stuff.
 Added new Transactions for dealing with books.
 There is still some sort of serialization error.
@@ -39,8 +39,8 @@ Updated with new API Changes
  * Date: Apr 6, 2004
  * Time: 9:30:44 PM
  */
-public class DoesHeldTransactionExist implements Query {
-    public DoesHeldTransactionExist(String id) {
+public class GetBook implements TransactionWithQuery {
+    public GetBook(String id) {
         this.id = id;
     }
 
@@ -52,9 +52,14 @@ public class DoesHeldTransactionExist implements Query {
      * @return The result of this Query.
      * @throws Exception Any Exception encountered by this Query.
      */
-    public Object query(Object prevalentSystem, Date executionTime) throws Exception {
+    public Object executeAndQuery(Object prevalentSystem, Date executionTime) throws Exception {
         LedgerSystem system = (LedgerSystem) prevalentSystem;
-        return new Boolean(system.getBookTable().exists(id));
+        PrevalentBook book = system.getBookTable().getBook(id);
+        if (book == null) {
+            book = new PrevalentBook(id, executionTime, system.getBookTable());
+            system.getBookTable().addBook(book);
+        }
+        return book;
     }
 }
 
