@@ -1,10 +1,10 @@
 package org.neuclear.ledger.prevalent;
 
 import org.neuclear.commons.NeuClearException;
-import org.neuclear.ledger.AbstractLedgerTest;
 import org.neuclear.ledger.Ledger;
 import org.neuclear.ledger.LowlevelLedgerException;
 import org.neuclear.ledger.UnknownLedgerException;
+import org.neuclear.ledger.tests.AbstractLedgerTest;
 
 import javax.naming.NamingException;
 import java.io.IOException;

@@ -82,6 +82,11 @@
             <version>2.0.1.000alpha</version>
             <jar>prevayler2.01.000alpha.jar</jar>
         </dependency>
+        <dependency>
+            <id>trove</id>
+            <name>trove</name>
+            <version>1.0.2</version>
+        </dependency>
 
     </dependencies>
     <build>
