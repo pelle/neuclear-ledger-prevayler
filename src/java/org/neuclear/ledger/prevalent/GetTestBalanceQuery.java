@@ -12,6 +12,10 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GetTestBalanceQuery implements Query {
+    public GetTestBalanceQuery(String ledger) {
+        this.ledger = ledger;
+    }
+
     /**
      * @param system        The Prevalent System to be queried.
      * @param executionTime The "current" time.
@@ -19,7 +23,9 @@ public class GetTestBalanceQuery implements Query {
      * @throws Exception Any Exception encountered by this Query.
      */
     public Object query(Object system, Date executionTime) throws Exception {
-        return new Double(((LedgerSystem) system).getBookTable().getTestBalance());
+        return new Double(((LedgerSystem) system).getBalanceTable().getTestBalance(ledger));
     }
+
+    private final String ledger;
 
 }

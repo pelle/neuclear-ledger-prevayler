@@ -38,12 +38,12 @@ import java.util.Iterator;
  */
 final class PrevalentBook extends Book implements Serializable {
     private ArrayList holds = null;
-    private double balance;
+//    private double balance;
     private BookTable books;
 
     PrevalentBook(String id, String nickname, String type, String source, Date registered, Date updated, String registrationid, BookTable books) {
         super(id, nickname, type, source, registered, updated, registrationid);
-        balance = 0;
+//        balance = 0;
         this.books = books;
     }
 
@@ -58,13 +58,13 @@ final class PrevalentBook extends Book implements Serializable {
         holds.add(tran);
     }
 
-    final double add(double amount) {
-        balance += amount;
-//        System.out.println("New Balance of "+getId()+" is "+balance);
-        return balance;
-    }
+//    final double add(double amount) {
+//        balance += amount;
+////        System.out.println("New Balance of "+getId()+" is "+balance);
+//        return balance;
+//    }
 
-    final double getHeldBalance(final Date current) {
+    final double getHeldBalance(final String ledger, final Date current) {
         if (holds == null || holds.size() == 0)
             return 0;
         Iterator iter = holds.iterator();
@@ -73,7 +73,7 @@ final class PrevalentBook extends Book implements Serializable {
         while (iter.hasNext()) {
             PostedHeldTransaction transaction = (PostedHeldTransaction) iter.next();
             if (transaction.getExpiryTime().after(current)) {
-                if (transaction.getReceiptId() != null) {
+                if (transaction.getReceiptId() != null && transaction.getLedger().equals(ledger)) {
                     Iterator items = transaction.getItems();
                     while (items.hasNext()) {
                         TransactionItem item = (TransactionItem) items.next();
@@ -90,13 +90,13 @@ final class PrevalentBook extends Book implements Serializable {
         return balance;
     }
 
-    final double getAvailableBalance(Date time) {
-        return getBalance() + getHeldBalance(time);
-    }
-
-    final double getBalance() {
-        return balance;
-    }
+//    final double getAvailableBalance(Date time) {
+//        return getBalance() + getHeldBalance(time);
+//    }
+//
+//    final double getBalance() {
+//        return balance;
+//    }
 
 
     static final void expire(final PostedHeldTransaction dead, final BookTable books) {
@@ -143,7 +143,7 @@ final class PrevalentBook extends Book implements Serializable {
     }
 
     public String toString() {
-        return "Book: " + getId() + " Balance: " + getBalance();
+        return "Book: " + getId();// + " Balance: " + getBalance();
     }
 
     Book createBook() {

@@ -42,7 +42,7 @@ public class PostTransaction implements TransactionWithQuery {
 //        table.register(tran.getReceiptId(),executionTime);
         System.out.println("Processing Transfer");
 
-        system.getBookTable().add(tran);
+        system.getBalanceTable().add(tran);
         return new PostedTransaction(tran, executionTime);
     }
 }

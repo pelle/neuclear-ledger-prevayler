@@ -148,7 +148,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
 
     public double getBalance(String ledger, String book) throws LowlevelLedgerException {
         try {
-            return ((Double) prevayler.execute(new GetBalanceQuery(book))).doubleValue();
+            return ((Double) prevayler.execute(new GetBalanceQuery(ledger, book))).doubleValue();
         } catch (Exception e) {
             throw new LowlevelLedgerException(e);
         }
@@ -176,7 +176,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
 
     public double getAvailableBalance(String ledger, String book) throws LowlevelLedgerException {
         try {
-            return ((Double) prevayler.execute(new GetAvailableBalanceQuery(book))).doubleValue();
+            return ((Double) prevayler.execute(new GetAvailableBalanceQuery(ledger, book))).doubleValue();
         } catch (Exception e) {
             throw new LowlevelLedgerException(e);
         }
@@ -304,7 +304,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
 
     public double getTestBalance(String ledger) throws LowlevelLedgerException {
         try {
-            return ((Double) prevayler.execute(new GetTestBalanceQuery())).doubleValue();
+            return ((Double) prevayler.execute(new GetTestBalanceQuery(ledger))).doubleValue();
         } catch (Exception e) {
             throw new LowlevelLedgerException(e);
         }

@@ -39,7 +39,7 @@ public class PostHeldTransaction implements TransactionWithQuery {
         Iterator iter = tran.getItems();
         while (iter.hasNext()) {
             TransactionItem item = (TransactionItem) iter.next();
-            if (system.getBookTable().getBook(item.getBook().getId()).getAvailableBalance(executionTime) + item.getAmount() < 0)
+            if (system.getAvailableBalance(tran.getLedger(), item.getBook().getId(), executionTime) + item.getAmount() < 0)
                 throw new InsufficientFundsException(null, item.getBook().getId(), item.getAmount());
         }
 

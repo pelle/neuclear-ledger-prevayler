@@ -20,10 +20,13 @@ package org.neuclear.ledger.prevalent;
  *  Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-import org.neuclear.ledger.*;
+import gnu.trove.THashMap;
+import org.neuclear.ledger.Book;
+import org.neuclear.ledger.PostedHeldTransaction;
+import org.neuclear.ledger.TransactionExistsException;
+import org.neuclear.ledger.TransactionItem;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -31,12 +34,12 @@ import java.util.Map;
  * This contains the balances of all the accounts
  */
 public final class BookTable implements Serializable {
-    private final HashMap accounts;
-    private final HashMap held;
+    private final Map accounts;
+    private final Map held;
 
     public BookTable() {
-        accounts = new HashMap();
-        held = new HashMap();
+        accounts = new THashMap();
+        held = new THashMap();
     }
 
 
@@ -74,35 +77,6 @@ public final class BookTable implements Serializable {
 //        printBalances();
     }
 
-    void add(UnPostedTransaction tran) throws TransactionExistsException {
-        Iterator items = tran.getItems();
-        while (items.hasNext()) {
-            TransactionItem item = (TransactionItem) items.next();
-            Book book = (Book) item.getBook();
-            getBook(book.getId()).add(item.getAmount());
-        }
-//        printBalances();
-    }
-
-
-    double getTestBalance() {
-        double balance = 0;
-        Iterator iter = accounts.entrySet().iterator();
-        while (iter.hasNext()) {
-            PrevalentBook book = (PrevalentBook) ((Map.Entry) iter.next()).getValue();
-            balance += book.getBalance();
-        }
-        return balance;
-    }
-
-    void printBalances() {
-        Iterator iter = accounts.entrySet().iterator();
-        while (iter.hasNext()) {
-            PrevalentBook book = (PrevalentBook) ((Map.Entry) iter.next()).getValue();
-            System.out.println(book);
-        }
-
-    }
 
     void expire(PostedHeldTransaction tran) {
         PrevalentBook.expire(tran, this);

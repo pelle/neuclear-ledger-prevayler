@@ -12,8 +12,9 @@ import java.util.Date;
  * To change this template use File | Settings | File Templates.
  */
 public class GetAvailableBalanceQuery implements Query {
-    public GetAvailableBalanceQuery(String book) {
+    public GetAvailableBalanceQuery(String ledger, String book) {
         this.bookid = book;
+        this.ledger = ledger;
     }
 
     /**
@@ -24,11 +25,9 @@ public class GetAvailableBalanceQuery implements Query {
      */
     public Object query(Object system, Date executionTime) throws Exception {
         final LedgerSystem ledgsys = ((LedgerSystem) system);
-        final PrevalentBook book = ledgsys.getBookTable().getBook(this.bookid);
-        if (book == null)
-            return new Double(0);
-        return new Double(book.getAvailableBalance(executionTime));
+        return new Double(ledgsys.getAvailableBalance(ledger, bookid, executionTime));
     }
 
+    private final String ledger;
     private final String bookid;
 }

@@ -3,11 +3,9 @@ package org.neuclear.ledger.prevalent;
 import org.neuclear.ledger.PostedHeldTransaction;
 import org.neuclear.ledger.PostedTransaction;
 import org.neuclear.ledger.TransactionExistsException;
-import org.neuclear.ledger.TransactionItem;
 import org.prevayler.TransactionWithQuery;
 
 import java.util.Date;
-import java.util.Iterator;
 
 /**
  * Created by IntelliJ IDEA.
@@ -46,11 +44,7 @@ public class CompleteHeldTransaction implements TransactionWithQuery {
         table.register(tran.getRequestId(), executionTime);
 
         final PostedTransaction posted = new PostedTransaction(tran, executionTime, amount, comment);
-        Iterator iter = posted.getItems();
-        while (iter.hasNext()) {
-            TransactionItem item = (TransactionItem) iter.next();
-            system.getBookTable().getBook(item.getBook().getId()).add(item.getAmount());
-        }
+        system.getBalanceTable().add(posted);
         return posted;
     }
 }
