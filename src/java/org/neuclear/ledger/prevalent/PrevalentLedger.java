@@ -178,6 +178,14 @@ public class PrevalentLedger extends Ledger implements Serializable {
         }
     }
 
+    public long getBookCount() throws LowlevelLedgerException {
+        return 0;  //TODO Implement
+    }
+
+    public long getTransactionCount() throws LowlevelLedgerException {
+        return 0;  //TODO Implement
+    }
+
     public boolean transactionExists(String id) throws LowlevelLedgerException {
         try {
             return ((Boolean) prevayler.execute(new DoesTransactionExist(id))).booleanValue();
