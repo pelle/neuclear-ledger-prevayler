@@ -236,6 +236,14 @@ public class PrevalentLedgerController extends LedgerController implements Seria
         }
     }
 
+    public Ledger registerLedger(String id, String nickname, String type, String source, String registrationid, String unit, int decimal) throws LowlevelLedgerException {
+        return null;
+    }
+
+    public Ledger getLedger(String id) throws LowlevelLedgerException, UnknownLedgerException {
+        return null;
+    }
+
     /**
      * Searches for a Held Transaction based on its Transaction ID
      *
