@@ -45,6 +45,10 @@ public class PrevalentLedgerController extends LedgerController implements Seria
         system = (LedgerSystem) prevayler.prevalentSystem();
     }
 
+    public boolean existsLedger(String id) {
+        return false;
+    }
+
     /**
      * The basic interface for creating Transactions in the database.
      * The implementing class takes this transacion information and stores it with an automatically generated uniqueid.
@@ -142,7 +146,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
      * @return the balance as a double
      */
 
-    public double getBalance(String book) throws LowlevelLedgerException {
+    public double getBalance(String ledger, String book) throws LowlevelLedgerException {
         try {
             return ((Double) prevayler.execute(new GetBalanceQuery(book))).doubleValue();
         } catch (Exception e) {
@@ -170,7 +174,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
      * @return the balance as a double
      */
 
-    public double getAvailableBalance(String book) throws LowlevelLedgerException {
+    public double getAvailableBalance(String ledger, String book) throws LowlevelLedgerException {
         try {
             return ((Double) prevayler.execute(new GetAvailableBalanceQuery(book))).doubleValue();
         } catch (Exception e) {
@@ -178,11 +182,11 @@ public class PrevalentLedgerController extends LedgerController implements Seria
         }
     }
 
-    public long getBookCount() throws LowlevelLedgerException {
+    public long getBookCount(String ledger) throws LowlevelLedgerException {
         return 0;  //TODO Implement
     }
 
-    public long getTransactionCount() throws LowlevelLedgerException {
+    public long getTransactionCount(String ledger) throws LowlevelLedgerException {
         return 0;  //TODO Implement
     }
 
@@ -298,7 +302,7 @@ public class PrevalentLedgerController extends LedgerController implements Seria
         }
     }
 
-    public double getTestBalance() throws LowlevelLedgerException {
+    public double getTestBalance(String ledger) throws LowlevelLedgerException {
         try {
             return ((Double) prevayler.execute(new GetTestBalanceQuery())).doubleValue();
         } catch (Exception e) {
