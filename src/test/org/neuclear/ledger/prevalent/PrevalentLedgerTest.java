@@ -1,6 +1,6 @@
 package org.neuclear.ledger.prevalent;
 
-import org.neuclear.ledger.Ledger;
+import org.neuclear.ledger.LedgerController;
 import org.neuclear.ledger.LowlevelLedgerException;
 import org.neuclear.ledger.tests.AbstractLedgerTest;
 
@@ -18,9 +18,9 @@ public class PrevalentLedgerTest extends AbstractLedgerTest {
         super(s);
     }
 
-    public Ledger createLedger() throws LowlevelLedgerException {
+    public LedgerController createLedger() throws LowlevelLedgerException {
         try {
-            return new PrevalentLedger("test");
+            return new PrevalentLedgerController("test");
         } catch (IOException e) {
             throw new LowlevelLedgerException(e);
         } catch (ClassNotFoundException e) {

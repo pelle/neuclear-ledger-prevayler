@@ -15,7 +15,7 @@ import java.util.Date;
  * Time: 1:03:54 PM
  * To change this template use File | Settings | File Templates.
  */
-public class PrevalentLedger extends Ledger implements Serializable {
+public class PrevalentLedgerController extends LedgerController implements Serializable {
     private final LedgerSystem system;
 
     /**
@@ -26,7 +26,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public PrevalentLedger(final String id, final String basedir) throws IOException, ClassNotFoundException {
+    public PrevalentLedgerController(final String id, final String basedir) throws IOException, ClassNotFoundException {
         super(id);
         prevayler = PrevaylerFactory.createPrevayler(new LedgerSystem(id), basedir);
         system = (LedgerSystem) prevayler.prevalentSystem();
@@ -39,7 +39,7 @@ public class PrevalentLedger extends Ledger implements Serializable {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    public PrevalentLedger(final String id) throws IOException, ClassNotFoundException {
+    public PrevalentLedgerController(final String id) throws IOException, ClassNotFoundException {
         super(id);
         prevayler = PrevaylerFactory.createTransientPrevayler(new LedgerSystem(id));
         system = (LedgerSystem) prevayler.prevalentSystem();
